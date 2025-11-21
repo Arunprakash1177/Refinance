@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Dashboard</h2>
+
+<div class="actions">
+  <a class="btn" href="{{ url_for('download_report') }}">⬇ Download Excel</a>
+</div>
+
+<h3>Summary Table</h3>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th>Agent Name</th>
+        <th>Total Outbound</th>
+        <th>Manual Outbound</th>
+        <th>Inbound</th>
+        <th>Total Calls</th>
+        <th>Talk Time (min)</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>
+          <a href="{{ url_for('agent_detail', name=row['Agent Name']) }}">
+            {{ row['Agent Name'] }}
+          </a>
+        </td>
+        <td>{{ row['Total Outbound Calls'] }}</td>
+        <td>{{ row['No. of Manual Outbound Calls'] }}</td>
+        <td>{{ row['No. of Inbound Calls'] }}</td>
+        <td>{{ row['Total Calls'] }}</td>
+        <td>{{ row['Total Talk Time (min)'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<h3>Outbound Calls per Agent</h3>
+<canvas id="outboundChart"></canvas>
+
+<h3>Manual vs Inbound per Agent</h3>
+<canvas id="manualInboundChart"></canvas>
+
+<script id="dashboard-data" type="application/json">
+{{ {
+  "agents": agents,
+  "total_outbound": total_outbound,
+  "manual_outbound": manual_outbound,
+  "inbound_calls": inbound_calls
+} | tojson }}
+</script>
+
+<script>
+  // Read data injected by server (keeps Jinja out of JS parsing)
+  const raw = document.getElementById('dashboard-data').textContent || '{}';
+  const data = JSON.parse(raw);
+  const agents = data.agents || [];
+  const totalOutbound = data.total_outbound || [];
+  const manualOutbound = data.manual_outbound || [];
+  const inboundCalls = data.inbound_calls || [];
+
+  // Outbound Chart
+  new Chart(document.getElementById('outboundChart'), {
+    type: 'bar',
+    data: {
+      labels: agents,
+      datasets: [{
+        label: 'Total Outbound (Tile)',
+        backgroundColor: '#1a73e8',
+        data: totalOutbound
+      }]
+    }
+  });
+
+  // Manual vs Inbound Chart
+  new Chart(document.getElementById('manualInboundChart'), {
+    type: 'bar',
+    data: {
+      labels: agents,
+      datasets: [
+        {
+          label: 'Manual Outbound (call_log)',
+          backgroundColor: '#34a853',
+          data: manualOutbound
+        },
+        {
+          label: 'Inbound (Tile)',
+          backgroundColor: '#fbbc04',
+          data: inboundCalls
+        }
+      ]
+    }
+  });
+
+</script>
+
+{% endblock %}
