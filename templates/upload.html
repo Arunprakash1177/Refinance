@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Upload CSV Files</h2>
+
+<form method="post" enctype="multipart/form-data" class="form-card">
+
+  <label>new_tile.csv</label>
+  <input type="file" name="new_tile" accept=".csv" required />
+
+  <label>call_log.csv</label>
+  <input type="file" name="call_log" accept=".csv" required />
+
+  <button type="submit">Generate Report</button>
+
+</form>
+
+{% endblock %}

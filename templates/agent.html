@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Agent: {{ row['Agent Name'] }}</h2>
+
+<div class="card">
+  <p><strong>Total Outbound Calls:</strong> {{ row['Total Outbound Calls'] }}</p>
+  <p><strong>Manual Outbound Calls:</strong> {{ row['No. of Manual Outbound Calls'] }}</p>
+  <p><strong>No. of Inbound Calls:</strong> {{ row['No. of Inbound Calls'] }}</p>
+  <p><strong>Total Calls:</strong> {{ row['Total Calls'] }}</p>
+  <p><strong>Total Talk Time (min):</strong> {{ row['Total Talk Time (min)'] }}</p>
+</div>
+
+<a class="btn" href="{{ url_for('dashboard') }}">⬅ Back to Dashboard</a>
+
+{% endblock %}
